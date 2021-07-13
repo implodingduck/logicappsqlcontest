@@ -10,7 +10,7 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-- group: kv-logicappsq-sbx
+- group: kv-logicappsql-sbx
 
 stages:
   - stage: plan
@@ -59,7 +59,6 @@ stages:
           TF_VAR_resource_group_name: $(TF_VAR_resource_group_name)
           TF_VAR_key: $(TF_VAR_key)
           TF_VAR_container_name: $(TF_VAR_container_name)
-          TF_VAR_location: $(TF_VAR_location)
       - publish: $(System.DefaultWorkingDirectory)/theplan
         artifact: theplan
   - stage: apply
@@ -116,4 +115,3 @@ stages:
               TF_VAR_resource_group_name: $(TF_VAR_resource_group_name)
               TF_VAR_key: $(TF_VAR_key)
               TF_VAR_container_name: $(TF_VAR_container_name)
-              TF_VAR_location: $(TF_VAR_location)
