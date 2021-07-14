@@ -18,19 +18,6 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
         with conn.cursor() as cursor:
             cursor.execute(f'UPDATE multiplication SET product={new_item["multiplier"] * new_item["multiplicand"]}, updatedDate=GETDATE() WHERE ID={new_item["ID"]}')
            
-    name = req.params.get('name')
-    if not name:
-        try:
-            req_body = req.get_json()
-        except ValueError:
-            pass
-        else:
-            name = req_body.get('name')
-
-    if name:
-        return func.HttpResponse(f"Hello, {name}. This HTTP triggered function executed successfully.")
-    else:
-        return func.HttpResponse(
-             "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.",
-             status_code=200
-        )
+    
+    return func.HttpResponse(f'Hello! {new_item["multiplier"]} X {new_item["multiplicand"]} = {new_item["multiplier"] * new_item["multiplicand"]}')
+    
