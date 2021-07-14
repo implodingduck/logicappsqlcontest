@@ -136,6 +136,13 @@ resource "azurerm_mssql_firewall_rule" "azureservices" {
   end_ip_address   = "0.0.0.0"
 }
 
+resource "azurerm_mssql_firewall_rule" "editor" {
+  name             = "editor"
+  server_id        = azurerm_mssql_server.db.id
+  start_ip_address = "167.220.149.227"
+  end_ip_address   = "167.220.149.227"
+}
+
 resource "azurerm_template_deployment" "sql_connection" {
   name = "logicappsqlcontest-sql-connection"
   resource_group_name = azurerm_resource_group.rg.name 
