@@ -256,12 +256,12 @@ resource "azurerm_template_deployment" "logicapp" {
                                   "id": "/subscriptions/${var.subscription_id}/resourceGroups/${azurerm_resource_group.rg.name}/providers/Microsoft.Web/sites/${local.func_name}/functions/HttpTrigger"
                               },
                               "body": {
-                                "value": @{triggerBody()}
+                                "value": "TBD"
                               }
                           },
                           "runAfter": {},
                           "type": "Function"
-                      },
+                      }
                     },
                     "outputs": {}
                 },
