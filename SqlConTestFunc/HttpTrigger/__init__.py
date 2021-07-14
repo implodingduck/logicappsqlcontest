@@ -9,14 +9,15 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     connection_string = os.environ.get('PYODBC_CONNECTION_STRING')
 
     print(f'{req.get_body()}')
-
+    new_item = req.get_body()["value"]
+    print(f'{new_item}')
+    print(f'ID: {new_item["ID"]}')
+    print(f'multiplier: {new_item["multiplier"]}')
+    print(f'multiplicand: {new_item["multiplicand"]}')
     with pyodbc.connect(connection_string) as conn:
         with conn.cursor() as cursor:
-            cursor.execute("SELECT TOP 3 multiplier, multiplicand, product FROM multiplication")
-            row = cursor.fetchone()
-            while row:
-                print(f'{row[0]} X {row[1]} = {row[2]}')
-                row = cursor.fetchone()
+            cursor.execute(f'UPDATE multiplication SET product={new_item["multiplier"] * new_item["multiplicand"]}, updatedDate=GETDATE() WHERE ID={new_item["ID"]}')
+           
     name = req.params.get('name')
     if not name:
         try:
