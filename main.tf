@@ -148,6 +148,9 @@ resource "azurerm_template_deployment" "sql_connection" {
         "connections_sql_name": {
             "defaultValue": "sql",
             "type": "String"
+        },
+        "sqlPassword": {
+            "type": "securestring"
         }
     },
     "variables": {},
@@ -163,13 +166,22 @@ resource "azurerm_template_deployment" "sql_connection" {
                 "customParameterValues": {},
                 "api": {
                     "id": "[concat('/subscriptions/${var.subscription_id}/providers/Microsoft.Web/locations/eastus/managedApis/', parameters('connections_sql_name'))]"
+                },
+                "parameterValues": {
+                  "server": "${azurerm_mssql_server.db.name}.database.windows.net",
+                  "database": "${azurerm_mssql_database.db.name}",
+                  "authType": "sqlAuthentication",
+                  "username": "sqladmin",
+                  "password": "[parameters('sqlPassword')]"
                 }
             }
         }
     ]
 }
   DEPLOY
-
+  parameters = {
+    "sqlPassword" = random_password.password.result
+  }
   deployment_mode = "Incremental"
 }
 
