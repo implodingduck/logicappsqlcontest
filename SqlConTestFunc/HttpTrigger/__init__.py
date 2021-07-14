@@ -7,6 +7,9 @@ import os
 def main(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
     connection_string = os.environ.get('PYODBC_CONNECTION_STRING')
+
+    print(f'{req.get_body()}')
+
     with pyodbc.connect(connection_string) as conn:
         with conn.cursor() as cursor:
             cursor.execute("SELECT TOP 3 multiplier, multiplicand, product FROM multiplication")

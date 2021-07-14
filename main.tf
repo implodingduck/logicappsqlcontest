@@ -46,7 +46,7 @@ module "function" {
     working_dir = "SqlConTestFunc"
     app_settings = {
       "FUNCTIONS_WORKER_RUNTIME" = "python"
-      "PYODBC_CONNECTOIN_STRING" = "DRIVER={ODBC Driver 17 for SQL Server};SERVER=tcp:${azurerm_mssql_server.db.name}.database.windows.net;PORT=1433;DATABASE=${azurerm_mssql_database.db.name};UID=sqladmin;PWD=${random_password.password.result}"
+      "PYODBC_CONNECTION_STRING" = "DRIVER={ODBC Driver 17 for SQL Server};SERVER=tcp:${azurerm_mssql_server.db.name}.database.windows.net;PORT=1433;DATABASE=${azurerm_mssql_database.db.name};UID=sqladmin;PWD=${random_password.password.result}"
     }
 
 }
@@ -256,7 +256,7 @@ resource "azurerm_template_deployment" "logicapp" {
                                   "id": "/subscriptions/${var.subscription_id}/resourceGroups/${azurerm_resource_group.rg.name}/providers/Microsoft.Web/sites/${local.func_name}/functions/HttpTrigger"
                               },
                               "body": {
-                                "value": "TBD"
+                                "value": "@triggerBody()"
                               }
                           },
                           "runAfter": {},
