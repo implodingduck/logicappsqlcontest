@@ -128,3 +128,41 @@ resource "azurerm_mssql_database" "db" {
     retention_days = 7
   }
 }
+
+
+resource "azurerm_template_deployment" "sql_connection" {
+  name = "logicappsqlcontest-sql-connection"
+  resource_group_name = azurerm_resource_group.literatetribble.name 
+
+  template_body = <<DEPLOY
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "connections_sql_name": {
+            "defaultValue": "sql",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[parameters('connections_sql_name')]",
+            "location": "eastus",
+            "kind": "V1",
+            "properties": {
+                "displayName": "logicappsqlcontest-sql-connection",
+                "customParameterValues": {},
+                "api": {
+                    "id": "[concat('/subscriptions/${var.subscription_id}/providers/Microsoft.Web/locations/eastus/managedApis/', parameters('connections_sql_name'))]"
+                }
+            }
+        }
+    ]
+}
+  DEPLOY
+
+  deployment_mode = "Incremental"
+}

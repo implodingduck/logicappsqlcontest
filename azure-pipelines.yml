@@ -13,9 +13,9 @@ variables:
 - group: kv-logicappsql-sbx
 
 stages:
-  - stage: plan
+  - stage: terraform
     jobs:
-    - job: terraform_plan
+    - job: do_terraform
       steps:
       - script: terraform --version
         displayName: 'check terraform version'
@@ -59,38 +59,6 @@ stages:
           TF_VAR_resource_group_name: $(resource-group-name)
           TF_VAR_key: $(TF_VAR_key)
           TF_VAR_container_name: $(container-name)
-      - publish: $(System.DefaultWorkingDirectory)/theplan
-        artifact: theplan
-  - stage: apply
-    jobs:
-    - job:
-      steps:
-      - checkout: self
-      - download: current
-        artifact: theplan
-      - task: FuncToolsInstaller@0
-        displayName: "Install Function Tool"
-      - task: AzureCLI@2
-        displayName: "Terraform Init"
-        inputs:
-          azureSubscription: ARM_SUBSCRIPTION
-          scriptType: bash
-          addSpnToEnvironment: true
-          scriptLocation: inlineScript
-          inlineScript: |
-            echo "starting..."
-            export ARM_CLIENT_ID=$servicePrincipalId
-            export ARM_CLIENT_SECRET=$servicePrincipalKey
-            export ARM_TENANT_ID=$tenantId
-            ./env_setup.sh
-            echo $TF_VAR_container_name
-            terraform init --backend-config=backend.tfvars
-        env:
-          TF_VAR_subscription_id: $(subscription-id)
-          TF_VAR_storage_account_name: $(storage-account-name)
-          TF_VAR_resource_group_name: $(resource-group-name)
-          TF_VAR_key: $(TF_VAR_key)
-          TF_VAR_container_name: $(container-name)
       - task: AzureCLI@2
         displayName: "Terraform Apply"
         inputs:
@@ -104,7 +72,7 @@ stages:
             export ARM_CLIENT_SECRET=$servicePrincipalKey
             export ARM_TENANT_ID=$tenantId
             mv SqlConTestFunc/local.settings.json.sample SqlConTestFunc/local.settings.json 
-            terraform apply -auto-approve  $(Pipeline.Workspace)/theplan/theplan
+            terraform apply -auto-approve theplan
         env:
           TF_VAR_subscription_id: $(subscription-id)
           TF_VAR_storage_account_name: $(storage-account-name)
