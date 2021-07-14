@@ -249,6 +249,20 @@ resource "azurerm_template_deployment" "logicapp" {
                             }
                         }
                     },
+                    "actions": {
+                      "${local.func_name}HttpTrigger": {
+                          "inputs": {
+                              "function": {
+                                  "id": "/subscriptions/${var.subscription_id}/resourceGroups/${azurerm_resource_group.rg.name}/providers/Microsoft.Web/sites/${local.func_name}/functions/HttpTrigger"
+                              }
+                              "body": {
+                                "value": @{triggerBody()}
+                              }
+                          },
+                          "runAfter": {},
+                          "type": "Function"
+                      },
+                    },
                     "outputs": {}
                 },
                 "parameters": {
