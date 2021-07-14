@@ -170,7 +170,7 @@ resource "azurerm_template_deployment" "sql_connection" {
                 "parameterValues": {
                   "server": "${azurerm_mssql_server.db.name}.database.windows.net",
                   "database": "${azurerm_mssql_database.db.name}",
-                  "authType": "sqlAuthentication",
+                  "authType": "basic",
                   "username": "sqladmin",
                   "password": "[parameters('sqlPassword')]"
                 }
