@@ -46,7 +46,7 @@ module "function" {
     working_dir = "SqlConTestFunc"
     app_settings = {
       "FUNCTIONS_WORKER_RUNTIME" = "python"
-      
+      "PYODBC_CONNECTOIN_STRING" = "DRIVER={ODBC Driver 17 for SQL Server};SERVER=tcp:${azurerm_mssql_server.db.name}.database.windows.net;PORT=1433;DATABASE=${azurerm_mssql_database.db.name};UID=sqladmin;PWD=${random_password.password.result}"
     }
 
 }
@@ -116,7 +116,7 @@ resource "azurerm_mssql_server" "db" {
 }
 
 resource "azurerm_mssql_database" "db" {
-  name                        = "logicappsqlcontest-db"
+  name                        = "logicappsqlcontestdb"
   server_id                   = azurerm_mssql_server.db.id
   max_size_gb                 = 40
   auto_pause_delay_in_minutes = -1
