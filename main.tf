@@ -132,7 +132,7 @@ resource "azurerm_mssql_database" "db" {
 
 resource "azurerm_template_deployment" "sql_connection" {
   name = "logicappsqlcontest-sql-connection"
-  resource_group_name = azurerm_resource_group.literatetribble.name 
+  resource_group_name = azurerm_resource_group.rg.name 
 
   template_body = <<DEPLOY
 {
