@@ -15,5 +15,5 @@ CREATE TABLE multiplication (
 INSERT INTO multiplication (multiplier, multiplicand) VALUES (1, 1);
 ```
 ```
-SELECT TOP (1000) * FROM [dbo].[multiplication]
+SELECT TOP (1000) * FROM [dbo].[multiplication] ORDER BY updatedDate DESC
 ```
