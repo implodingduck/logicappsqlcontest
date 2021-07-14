@@ -9,7 +9,7 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     connection_string = os.environ.get('PYODBC_CONNECTION_STRING')
 
     print(f'{req.get_body()}')
-    new_item = req.get_body()["value"]
+    new_item = req.get_json().get("value")
     print(f'{new_item}')
     print(f'ID: {new_item["ID"]}')
     print(f'multiplier: {new_item["multiplier"]}')
