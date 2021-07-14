@@ -87,6 +87,44 @@ resource "azurerm_key_vault" "kv" {
       "purge"
     ]
   }
+}
 
+resource "random_password" "password" {
+  length           = 16
+  special          = true
+  override_special = "_%@"
+}
 
+resource "azurerm_key_vault_secret" "dbpassword" {
+  name         = "dbpassword"
+  value        = random_password.password.result
+  key_vault_id = azurerm_key_vault.kv.id
+  tags         = {}
+}
+
+resource "azurerm_mssql_server" "db" {
+  name                         = "logicappsqlcontest-server"
+  resource_group_name          = azurerm_resource_group.rg.name
+  location                     = azurerm_resource_group.rg.location
+  version                      = "12.0"
+  administrator_login          = "sqladmin"
+  administrator_login_password = random_password.password.result
+  minimum_tls_version          = "1.2"
+
+  tags = {
+  }
+}
+
+resource "azurerm_mssql_database" "db" {
+  name                        = "logicappsqlcontest-db"
+  server_id                   = azurerm_mssql_server.db.id
+  max_size_gb                 = 40
+  auto_pause_delay_in_minutes = -1
+  min_capacity                = 1
+  sku_name                    = "GP_S_Gen5_1"
+  tags = {
+  }
+  short_term_retention_policy {
+    retention_days = 7
+  }
 }
