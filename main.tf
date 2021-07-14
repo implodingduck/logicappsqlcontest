@@ -129,6 +129,12 @@ resource "azurerm_mssql_database" "db" {
   }
 }
 
+resource "azurerm_mssql_firewall_rule" "azureservices" {
+  name             = "azureservices"
+  server_id        = azurerm_mssql_server.db.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
+}
 
 resource "azurerm_template_deployment" "sql_connection" {
   name = "logicappsqlcontest-sql-connection"
@@ -163,6 +169,85 @@ resource "azurerm_template_deployment" "sql_connection" {
     ]
 }
   DEPLOY
+
+  deployment_mode = "Incremental"
+}
+
+
+
+resource "azurerm_template_deployment" "logicapp" {
+  name = "logicappsqlcontest-la"
+  resource_group_name = azurerm_resource_group.rg.name 
+
+  template_body = <<DEPLOY
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "workflows_name": {
+            "defaultValue": "logicappsqlcontest-la",
+            "type": "String"
+        },
+        "connections_sql_1_externalid": {
+            "defaultValue": "/subscriptions/${var.subscription_id}/resourceGroups/${azurerm_resource_group.rg.name}/providers/Microsoft.Web/connections/sql",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_name')]",
+            "location": "eastus",
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "When_an_item_is_created_(V2)": {
+                            "recurrence": {
+                                "frequency": "Second",
+                                "interval": 30
+                            },
+                            "splitOn": "@triggerBody()?['value']",
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['sql']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('default'))},@{encodeURIComponent(encodeURIComponent('default'))}/tables/@{encodeURIComponent(encodeURIComponent('[dbo].[multiplication]'))}/onnewitems"
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "sql": {
+                                "connectionId": "[parameters('connections_sql_1_externalid')]",
+                                "connectionName": "sql-1",
+                                "id": "/subscriptions/${var.subscription_id}/providers/Microsoft.Web/locations/eastus/managedApis/sql"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
+DEPLOY
 
   deployment_mode = "Incremental"
 }

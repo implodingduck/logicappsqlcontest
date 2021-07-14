@@ -1,5 +1,6 @@
 variable "subscription_id" {
   type = string
+  sensitive = true
 }
 
 variable "resource_group_name" {
@@ -8,6 +9,7 @@ variable "resource_group_name" {
 
 variable "storage_account_name" {
   type = string
+  sensitive = true
 }
 
 variable "key" {
