@@ -289,8 +289,6 @@ resource "azurerm_template_deployment" "logicapp" {
                       }
                     },
                     "outputs": {}
-                    },
-                    "outputs": {}
                 },
                 "parameters": {
                     "$connections": {
