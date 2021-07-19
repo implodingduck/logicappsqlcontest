@@ -53,7 +53,7 @@ module "function" {
 
 module "sumfunction" {
     source = "github.com/implodingduck/tfmodules//functionapp"
-    func_name = "sum-${local.func_name}"
+    func_name = "sum${local.func_name}"
     resource_group_name = azurerm_resource_group.rg.name
     resource_group_location = azurerm_resource_group.rg.location
     working_dir = "SqlConTestSumFunc"
@@ -278,7 +278,7 @@ resource "azurerm_template_deployment" "logicapp" {
                       "${local.func_name}SumHttpTrigger": {
                           "inputs": {
                               "function": {
-                                  "id": "/subscriptions/${var.subscription_id}/resourceGroups/${azurerm_resource_group.rg.name}/providers/Microsoft.Web/sites/sum-${local.func_name}/functions/HttpTrigger"
+                                  "id": "/subscriptions/${var.subscription_id}/resourceGroups/${azurerm_resource_group.rg.name}/providers/Microsoft.Web/sites/sum${local.func_name}/functions/HttpTrigger"
                               },
                               "body": {
                                 "value": "@triggerBody()"
