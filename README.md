@@ -1,6 +1,7 @@
 # logicappsqlcontest
 
 ## Database Schema
+Create:
 ```
 CREATE TABLE multiplication (
 	ID int NOT NULL IDENTITY PRIMARY KEY,
@@ -12,9 +13,11 @@ CREATE TABLE multiplication (
 	updatedDate DATETIME DEFAULT GETDATE(),
 );
 ```
+Insert:
 ```
 INSERT INTO multiplication (multiplier, multiplicand) VALUES (1, 1);
 ```
+Select:
 ```
 SELECT TOP (1000) * FROM [dbo].[multiplication] ORDER BY updatedDate DESC
 ```
