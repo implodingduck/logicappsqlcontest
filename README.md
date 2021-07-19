@@ -7,6 +7,7 @@ CREATE TABLE multiplication (
     multiplier int,
     multiplicand int,
 	product int DEFAULT 0,
+	sum int DEFAULT 0,
 	createdDate DATETIME DEFAULT GETDATE(),
 	updatedDate DATETIME DEFAULT GETDATE(),
 );

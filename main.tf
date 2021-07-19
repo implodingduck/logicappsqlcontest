@@ -51,6 +51,19 @@ module "function" {
 
 }
 
+module "sumfunction" {
+    source = "github.com/implodingduck/tfmodules//functionapp"
+    func_name = "sum-${local.func_name}"
+    resource_group_name = azurerm_resource_group.rg.name
+    resource_group_location = azurerm_resource_group.rg.location
+    working_dir = "SqlConTestSumFunc"
+    app_settings = {
+      "FUNCTIONS_WORKER_RUNTIME" = "python"
+      "PYODBC_CONNECTION_STRING" = "DRIVER={ODBC Driver 17 for SQL Server};SERVER=tcp:${azurerm_mssql_server.db.name}.database.windows.net;PORT=1433;DATABASE=${azurerm_mssql_database.db.name};UID=sqladmin;PWD=${random_password.password.result}"
+    }
+
+}
+
 resource "azurerm_key_vault" "kv" {
   name                       = "logappsqlcontest-kv"
   location                   = azurerm_resource_group.rg.location
@@ -262,6 +275,20 @@ resource "azurerm_template_deployment" "logicapp" {
                           "runAfter": {},
                           "type": "Function"
                       }
+                      "${local.func_name}SumHttpTrigger": {
+                          "inputs": {
+                              "function": {
+                                  "id": "/subscriptions/${var.subscription_id}/resourceGroups/${azurerm_resource_group.rg.name}/providers/Microsoft.Web/sites/sum-${local.func_name}/functions/HttpTrigger"
+                              },
+                              "body": {
+                                "value": "@triggerBody()"
+                              }
+                          },
+                          "runAfter": {},
+                          "type": "Function"
+                      }
+                    },
+                    "outputs": {}
                     },
                     "outputs": {}
                 },
