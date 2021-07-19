@@ -208,7 +208,7 @@ resource "azurerm_template_deployment" "sql_connection" {
 
 
 resource "azurerm_template_deployment" "logicapp" {
-  name = "logicappsqlcontest-la"
+  name = "logicappsqlcontest-la2"
   resource_group_name = azurerm_resource_group.rg.name 
 
   template_body = <<DEPLOY
