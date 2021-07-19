@@ -208,7 +208,7 @@ resource "azurerm_template_deployment" "sql_connection" {
 
 
 resource "azurerm_template_deployment" "logicapp" {
-  name = "logicappsqlcontest-la2"
+  name = "logicappsqlcontest-la"
   resource_group_name = azurerm_resource_group.rg.name 
 
   template_body = <<DEPLOY
@@ -274,7 +274,7 @@ resource "azurerm_template_deployment" "logicapp" {
                           },
                           "runAfter": {},
                           "type": "Function"
-                      }
+                      },
                       "${local.func_name}SumHttpTrigger": {
                           "inputs": {
                               "function": {
