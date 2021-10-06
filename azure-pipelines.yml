@@ -75,7 +75,8 @@ stages:
             export ARM_TENANT_ID=$tenantId
             mv SqlConTestFunc/local.settings.json.sample SqlConTestFunc/local.settings.json 
             mv SqlConTestSumFunc/local.settings.json.sample SqlConTestSumFunc/local.settings.json 
-            terraform apply -auto-approve theplan
+            #terraform apply -auto-approve theplan
+            terraform destroy -auto-approve
         env:
           TF_VAR_subscription_id: $(subscription-id)
           TF_VAR_storage_account_name: $(storage-account-name)
